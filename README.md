@@ -11,7 +11,7 @@
     * [Interpretation of Collected Data](#interpretation-of-collected-data)
 
 ## About the Project
-In this program, substring searches are performed in text files in a multithreaded manner. Multithreading was used to improve the efficiency of searching for substrings within large strings (there are over 4,318,6700 characters in [shakespeare.txt](https://github.com/RobertCarrUTA/C-Multithreaded-Substring-Search/blob/main/shakespeare.txt)!). [POSIX thread libraries](https://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread.h.html) were used to support multiple threads. POSIX provides standard C/C++ thread APIs. New concurrent processes were spawned with this method.
+In this program, a substring search is performed in text files in a multithreaded manner. Multithreading was used to improve the efficiency of searching for substrings within large strings (there are over 4,318,6700 characters in [shakespeare.txt](https://github.com/RobertCarrUTA/C-Multithreaded-Substring-Search/blob/main/shakespeare.txt)!). [POSIX thread libraries](https://pubs.opengroup.org/onlinepubs/7908799/xsh/pthread.h.html) were used to support multiple threads. POSIX provides standard C/C++ thread APIs. New concurrent processes were spawned with this method.
 
 ## Compile Instructions
 These compile instructions are for a Ubuntu Operating System
