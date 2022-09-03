@@ -1,4 +1,3 @@
-*README.md is still under construction*
 # Multithreaded Substring Search in C
 
 ## Table of Contents
