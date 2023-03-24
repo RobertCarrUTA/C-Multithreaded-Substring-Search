@@ -9,106 +9,17 @@
 #define MAX 5000000   // Maximum size for s1 and s2
 #define NUM_THREADS 4 // Number of threads to use
 
+// Function prototypes
+int readf(char*);
+void *num_substring(void*);
+
 int total          = 0; // Total number of substrings found
 int thread_counter = 0; // Counter used to assign each thread a unique ID
 int n1, n2;             // Lengths of s1 and s2
 char *s1, *s2;          // Pointers to s1 and s2, s1 = entire file string, s2 = substring to look for in s1
 FILE *fp;               // Pointer to the input file
-pthread_mutex_t mutex;  // Mutex used to synchronize access to the "total" variable
 
-/***********************************************************************************************************************
-  @brief: readf attempts to read two strings (s1 and s2) from a file specified by the filename argument.
-            It first attempts to open the file and returns an error message if it cannot be opened. It then allocates
-            memory for s1 and s2, reads the two strings from the file using fgets(), and finds the length of each
-            string using strlen(). Finally, the function checks if either of the strings are null or if the length of
-            s1 is less than s2, and returns an error if either condition is true.
-***********************************************************************************************************************/
-int readf(char *filename)
-{
-    // Attempt to open the file, if it doesn't exist, print an error message and return 0
-    if ((fp = fopen(filename, "r")) == NULL)
-    {
-        printf("ERROR: can’t open %s!\n", filename);
-        return 0;
-    }
-
-    // Allocate memory for string s1
-    s1 = (char*) malloc(sizeof(char) *MAX);
-
-    // If memory allocation fails, print an error message and return -1
-    if (s1 == NULL)
-    {
-        printf("ERROR: Out of memory!\n");
-        return -1;
-    }
-
-    // Allocate memory for string s2
-    s2 = (char*) malloc(sizeof(char) *MAX);
-
-    // If memory allocation fails, print an error message and return -1
-    if (s1 == NULL)
-    {
-        printf("ERROR: Out of memory\n");
-        return -1;
-    }
-
-    // Read s1 and s2 from the file
-    s1 = fgets(s1, MAX, fp);
-    s2 = fgets(s2, MAX, fp);
-    n1 = strlen(s1);        // Find the length of string s1
-    n2 = strlen(s2) - 1;    // Find the length of string s2, excluding the newline character
-
-    // If any of the strings are NULL or the length of s1 is less than s2, return -1
-    if (s1 == NULL || s2 == NULL || n1 < n2)
-    {
-        return -1;
-    }
-}
-
-/***********************************************************************************************************************
-  @brief: In summary, num_substring(void *ptr) is a function that searches for substrings of s2 in s1. It is designed to
-            be run concurrently by multiple threads, with each thread responsible for a portion of s1. The function
-            counts the number of times that s2 appears as a substring of s1, incrementing a global variable total and
-            using a mutex to ensure that multiple threads don't update the variable at the same time. The function
-            returns NULL.
-***********************************************************************************************************************/
-void *num_substring(void *ptr)
-{
-    // Get the ID of the current thread and increment the global thread counter
-    int thread_id = thread_counter++;
-
-    int i, j, k; // Loop variables
-    int count;   // Keeps track of how many characters match between s1 and s2
-
-    // Loop through a section of s1 based on the thread ID
-    for (i = thread_id * ((n1 - n2) / NUM_THREADS); i < ((thread_id + 1) * ((n1 - n2) / NUM_THREADS)); i++)
-    {
-        count = 0;  // Reset count for each iteration of the outer loop
-
-        // Check for a substring starting at position i
-        for (j = i, k = 0; k < n2; j++, k++)
-        {
-            // If characters at s1 and s2 don't match, break out of the inner loop
-            if (*(s1 + j) != *(s2 + k))
-            {
-                break;
-            }
-            else
-            {
-                count++; // Increment count if characters match
-            }
-
-            // If we've matched n2 characters, increment total count and release mutex
-            if (count == n2)
-            {
-                pthread_mutex_lock(&mutex);
-                total++;
-                pthread_mutex_unlock(&mutex);
-            }
-        }
-    }
-    return NULL;
-}
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; // Mutex used to synchronize access to the "total" variable
 
 /***********************************************************************************************************************
   @brief: The main function initializes a mutex, creates multiple threads to search for substrings, and then joins the
@@ -187,4 +98,125 @@ int main(int argc, char *argv[])
     pthread_exit(NULL);
 
     return 0;
+}
+
+/***********************************************************************************************************************
+  @brief: readf attempts to read two strings (s1 and s2) from a file specified by the filename argument.
+            It first attempts to open the file and returns an error message if it cannot be opened. It then allocates
+            memory for s1 and s2, reads the two strings from the file using fgets(), and finds the length of each
+            string using strlen(). Finally, the function checks if either of the strings are null or if the length of
+            s1 is less than s2, and returns an error if either condition is true.
+***********************************************************************************************************************/
+int readf(char *filename)
+{
+    // Attempt to open the file, if it doesn't exist, print an error message and return 0
+    fp = fopen(filename, "r");
+    if (fp == NULL)
+    {
+        printf("ERROR: can't open %s!\n", filename);
+        return 0;
+    }
+
+    // Allocate memory for string s1
+    s1 = (char*) malloc(sizeof(char) * MAX);
+
+    // If memory allocation fails, print an error message, close the file, and return -1
+    if (s1 == NULL)
+    {
+        printf("ERROR: Out of memory!\n");
+        fclose(fp);
+        return -1;
+    }
+
+    // Allocate memory for string s2
+    s2 = (char*) malloc(sizeof(char) * MAX);
+
+    // If memory allocation fails, print an error message, free s1, close the file, and return -1
+    if (s2 == NULL)
+    {
+        printf("ERROR: Out of memory\n");
+        free(s1);
+        fclose(fp);
+        return -1;
+    }
+
+    // Read s1 and s2 from the file
+    if (fgets(s1, MAX, fp) == NULL || fgets(s2, MAX, fp) == NULL)
+    {
+        printf("ERROR: Error reading from file!\n");
+        free(s1);
+        free(s2);
+        fclose(fp);
+        return -1;
+    }
+
+    n1 = strlen(s1);     // Find the length of string s1
+    n2 = strlen(s2) - 1; // Find the length of string s2, excluding the newline character
+
+    // If the length of s1 is less than s2, print an error message, free s1 and s2, close the file, and return -1
+    if (n1 < n2)
+    {
+        printf("ERROR: Length of s1 is less than s2!\n");
+        free(s1);
+        free(s2);
+        fclose(fp);
+        return -1;
+    }
+
+    return 1;
+}
+
+/***********************************************************************************************************************
+  @brief: In summary, num_substring(void *ptr) is a function that searches for substrings of s2 in s1. It is designed to
+            be run concurrently by multiple threads, with each thread responsible for a portion of s1. The function
+            counts the number of times that s2 appears as a substring of s1, incrementing a global variable total and
+            using a mutex to ensure that multiple threads don't update the variable at the same time. The function
+            returns NULL.
+***********************************************************************************************************************/
+void *num_substring(void *ptr)
+{
+    // Get the ID of the current thread and increment the global thread counter
+    int thread_id = __sync_fetch_and_add(&thread_counter, 1);
+
+    int i, j, k; // Loop variables
+    int count;   // Keeps track of how many characters match between s1 and s2
+
+    /*
+      Calculate the range of characters in s1 to search
+        It is possible that some characters in s1 will not be searched if n1 - n2 is not
+        divisible by NUM_THREADS. This can be fixed by rounding up the result of the
+        division with the ceil function
+    */
+    int start = ceil((double)(n1 - n2 + 1) / NUM_THREADS * thread_id);
+    int end   = ceil((double)(n1 - n2 + 1) / NUM_THREADS * (thread_id + 1));
+
+    // Loop through a section of s1 based on the thread ID
+    for (i = start; i < end; i++)
+    {
+        count = 0;  // Reset count for each iteration of the outer loop
+
+        // Check for a substring starting at position i
+        for (j = i, k = 0; k < n2; j++, k++)
+        {
+            // If characters at s1 and s2 don't match, break out of the inner loop
+            if (*(s1 + j) != *(s2 + k))
+            {
+                break;
+            }
+            else
+            {
+                count++; // Increment count if characters match
+            }
+        }
+
+        // If we've matched n2 characters, increment total count
+        if (count == n2)
+        {
+            pthread_mutex_lock(&mutex);
+            total++;
+            pthread_mutex_unlock(&mutex);
+        }
+    }
+
+    return NULL;
 }
