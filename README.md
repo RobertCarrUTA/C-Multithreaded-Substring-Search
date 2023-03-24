@@ -15,8 +15,8 @@ In this program, a substring search is performed in text files in a multithreade
 
 ## Compile Instructions
 These compile instructions are for a Ubuntu Operating System
-* compile: gcc -pthread -o substring substring.c
-* compile with extra warnings: gcc -Wall -pthread -o substring substring.c
+* compile: gcc -pthread -o substring substring.c -lm
+* compile with extra warnings: gcc -Wall -pthread -o substring substring.c -lm
 * run: ./substring hamlet.txt
   * A filename in the current directory can be substituted for hamlet.txt when running. However, it must meet [the requirements for using your own text file](#requirements-for-using-your-own-textfile)
 
