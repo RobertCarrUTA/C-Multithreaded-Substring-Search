@@ -25,40 +25,40 @@ pthread_mutex_t mutex;  // Mutex used to synchronize access to the "total" varia
 ***********************************************************************************************************************/
 int readf(char *filename)
 {
-   	// Attempt to open the file, if it doesn't exist, print an error message and return 0
+    // Attempt to open the file, if it doesn't exist, print an error message and return 0
     if ((fp = fopen(filename, "r")) == NULL)
     {
         printf("ERROR: can’t open %s!\n", filename);
         return 0;
     }
 
-   	// Allocate memory for string s1
+    // Allocate memory for string s1
     s1 = (char*) malloc(sizeof(char) *MAX);
 
-   	// If memory allocation fails, print an error message and return -1
+    // If memory allocation fails, print an error message and return -1
     if (s1 == NULL)
     {
         printf("ERROR: Out of memory!\n");
         return -1;
     }
 
-   	// Allocate memory for string s2
+    // Allocate memory for string s2
     s2 = (char*) malloc(sizeof(char) *MAX);
 
-   	// If memory allocation fails, print an error message and return -1
+    // If memory allocation fails, print an error message and return -1
     if (s1 == NULL)
     {
         printf("ERROR: Out of memory\n");
         return -1;
     }
 
-   	// Read s1 and s2 from the file
+    // Read s1 and s2 from the file
     s1 = fgets(s1, MAX, fp);
     s2 = fgets(s2, MAX, fp);
-    n1 = strlen(s1);	    // Find the length of string s1
-    n2 = strlen(s2) - 1;	// Find the length of string s2, excluding the newline character
+    n1 = strlen(s1);        // Find the length of string s1
+    n2 = strlen(s2) - 1;    // Find the length of string s2, excluding the newline character
 
-   	// If any of the strings are NULL or the length of s1 is less than s2, return -1
+    // If any of the strings are NULL or the length of s1 is less than s2, return -1
     if (s1 == NULL || s2 == NULL || n1 < n2)
     {
         return -1;
@@ -107,7 +107,6 @@ void *num_substring(void *ptr)
             }
         }
     }
-
     return NULL;
 }
 
@@ -186,6 +185,6 @@ int main(int argc, char *argv[])
 
     // Exit the pthread library
     pthread_exit(NULL);
- 
+
     return 0;
 }
