@@ -16,7 +16,7 @@ void *num_substring(void*);
 int total          = 0; // Total number of substrings found
 int thread_counter = 0; // Counter used to assign each thread a unique ID
 int n1, n2;             // Lengths of s1 and s2
-char *s1, *s2;          // Pointers to s1 and s2, s1 = entire file string, s2 = substring to look for in s1
+char *s1, *s2;          // Pointers to s1 and s2, s1 = larger string for s2 to search in, s2 = substring to look for in s1
 FILE *fp;               // Pointer to the input file
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; // Mutex used to synchronize access to the "total" variable
