@@ -1,10 +1,10 @@
-#include <stdlib.h>   // Provides standard library functions for memory allocation, process control, and other basic functionalities
-#include <stdio.h>    // Provides input and output functions for reading and writing to files and the console
-#include <string.h>   // Provides functions for manipulating strings, such as copying and comparing strings
-#include <sys/time.h> // Provides functions for working with time values, such as gettimeofday used in this program to measure the execution time of the program
-#include <pthread.h>  // Provides functions and data structures for creating and managing threads, used in this program to implement parallelism
-#include <unistd.h>   // Provides access to POSIX operating system API, including standard symbolic constants and types
-#include <math.h>     // Provides mathematical functions, such as ceil used in this program to calculate the number of threads needed for parallel execution
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/time.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <math.h>
 
 #define MAX 5000000   // Maximum size for s1 and s2
 #define NUM_THREADS 4 // Number of threads to use
