@@ -22,12 +22,12 @@ FILE *fp;               // Pointer to the input file
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; // Mutex used to synchronize access to the "total" variable
 
 /***********************************************************************************************************************
-  @brief: The main function initializes a mutex, creates multiple threads to search for substrings, and then joins the
-            threads to ensure they have finished before printing the total number of substrings and the elapsed time.
-            The num_substring function is responsible for finding substrings and updating the global variable total
-            using the mutex to ensure that multiple threads don't update the variable at the same time. The readf
-            function reads two strings from a file and returns an error if either of the strings is NULL or the length
-            of the first string is less than the second string.
+  The main function initializes a mutex, creates multiple threads to search for substrings, and then joins the
+    threads to ensure they have finished before printing the total number of substrings and the elapsed time.
+    The num_substring function is responsible for finding substrings and updating the global variable total
+    using the mutex to ensure that multiple threads don't update the variable at the same time. The readf
+    function reads two strings from a file and returns an error if either of the strings is NULL or the length
+    of the first string is less than the second string.
 ***********************************************************************************************************************/
 int main(int argc, char *argv[])
 {
@@ -101,11 +101,11 @@ int main(int argc, char *argv[])
 }
 
 /***********************************************************************************************************************
-  @brief: readf attempts to read two strings (s1 and s2) from a file specified by the filename argument.
-            It first attempts to open the file and returns an error message if it cannot be opened. It then allocates
-            memory for s1 and s2, reads the two strings from the file using fgets(), and finds the length of each
-            string using strlen(). Finally, the function checks if either of the strings are null or if the length of
-            s1 is less than s2, and returns an error if either condition is true.
+  readf attempts to read two strings (s1 and s2) from a file specified by the filename argument.
+    It first attempts to open the file and returns an error message if it cannot be opened. It then allocates
+    memory for s1 and s2, reads the two strings from the file using fgets(), and finds the length of each
+    string using strlen(). Finally, the function checks if either of the strings are null or if the length of
+    s1 is less than s2, and returns an error if either condition is true.
 ***********************************************************************************************************************/
 int readf(char *filename)
 {
@@ -167,11 +167,11 @@ int readf(char *filename)
 }
 
 /***********************************************************************************************************************
-  @brief: In summary, num_substring(void *ptr) is a function that searches for substrings of s2 in s1. It is designed to
-            be run concurrently by multiple threads, with each thread responsible for a portion of s1. The function
-            counts the number of times that s2 appears as a substring of s1, incrementing a global variable total and
-            using a mutex to ensure that multiple threads don't update the variable at the same time. The function
-            returns NULL.
+  In summary, num_substring(void *ptr) is a function that searches for substrings of s2 in s1. It is designed to
+    be run concurrently by multiple threads, with each thread responsible for a portion of s1. The function
+    counts the number of times that s2 appears as a substring of s1, incrementing a global variable total and
+    using a mutex to ensure that multiple threads don't update the variable at the same time. The function
+    returns NULL.
 ***********************************************************************************************************************/
 void *num_substring(void *ptr)
 {
