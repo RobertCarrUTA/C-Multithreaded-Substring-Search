@@ -7,9 +7,8 @@
 #include <math.h>
 
 #define MAX 5000000   // Maximum size for s1 and s2
-#define NUM_THREADS 4 // Number of threads to use
+#define NUM_THREADS 4
 
-// Function prototypes
 int readf(char*);
 void *num_substring(void*);
 
@@ -27,7 +26,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; // Mutex used to synchronize 
     The num_substring function is responsible for finding substrings and updating the global variable total
     using the mutex to ensure that multiple threads don't update the variable at the same time. The readf
     function reads two strings from a file and returns an error if either of the strings is NULL or the length
-    of the first string is less than the second string.
+    of the first string is less than the second string
 ***********************************************************************************************************************/
 int main(int argc, char *argv[])
 {
@@ -38,14 +37,12 @@ int main(int argc, char *argv[])
         printf("Error: You must pass in the datafile as a commandline parameter\n");
     }
 
-    // Call the readf function with the first argument as the filename
     readf(argv[1]);
 
     struct timeval start, end;
     float mtime;
     int secs, usecs;
 
-    // Get the start time of the program
     gettimeofday(&start, NULL);
 
     // Initialize the mutex
@@ -70,10 +67,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Print the total number of substrings found
     printf("The number of substrings is : %d\n", total);
 
-    // Get the end time of the program
     gettimeofday(&end, NULL);
 
     secs  = end.tv_sec - start.tv_sec;             // Calculate the number of seconds elapsed
@@ -84,13 +79,11 @@ int main(int argc, char *argv[])
 
     if (s1)
     {
-        // Free the memory allocated for s1
         free(s1);
     }
 
     if (s2)
     {
-        // Free the memory allocated for s2
         free(s2);
     }
 
@@ -105,11 +98,10 @@ int main(int argc, char *argv[])
     It first attempts to open the file and returns an error message if it cannot be opened. It then allocates
     memory for s1 and s2, reads the two strings from the file using fgets(), and finds the length of each
     string using strlen(). Finally, the function checks if either of the strings are null or if the length of
-    s1 is less than s2, and returns an error if either condition is true.
+    s1 is less than s2, and returns an error if either condition is true
 ***********************************************************************************************************************/
 int readf(char *filename)
 {
-    // Attempt to open the file, if it doesn't exist, print an error message and return 0
     fp = fopen(filename, "r");
     if (fp == NULL)
     {
@@ -117,7 +109,6 @@ int readf(char *filename)
         return 0;
     }
 
-    // Allocate memory for string s1
     s1 = (char*) malloc(sizeof(char) * MAX);
 
     // If memory allocation fails, print an error message, close the file, and return -1
@@ -128,7 +119,6 @@ int readf(char *filename)
         return -1;
     }
 
-    // Allocate memory for string s2
     s2 = (char*) malloc(sizeof(char) * MAX);
 
     // If memory allocation fails, print an error message, free s1, close the file, and return -1
@@ -167,11 +157,11 @@ int readf(char *filename)
 }
 
 /***********************************************************************************************************************
-  In summary, num_substring(void *ptr) is a function that searches for substrings of s2 in s1. It is designed to
+  num_substring(void *ptr) is a function that searches for substrings of s2 in s1. It is designed to
     be run concurrently by multiple threads, with each thread responsible for a portion of s1. The function
     counts the number of times that s2 appears as a substring of s1, incrementing a global variable total and
     using a mutex to ensure that multiple threads don't update the variable at the same time. The function
-    returns NULL.
+    returns NULL
 ***********************************************************************************************************************/
 void *num_substring(void *ptr)
 {
@@ -193,7 +183,7 @@ void *num_substring(void *ptr)
     // Loop through a section of s1 based on the thread ID
     for (i = start; i < end; i++)
     {
-        count = 0;  // Reset count for each iteration of the outer loop
+        count = 0;
 
         // Check for a substring starting at position i
         for (j = i, k = 0; k < n2; j++, k++)
